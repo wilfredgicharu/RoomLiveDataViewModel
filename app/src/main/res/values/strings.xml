@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">RoomMvvmApplication</string>
+    <string name="descripcion">Description</string>
 </resources>
