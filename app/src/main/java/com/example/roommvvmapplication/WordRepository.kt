@@ -1,30 +1,63 @@
-package com.example.roommvvmapplication
+package com.jeluchu.roomlivedata
 
-import android.os.AsyncTask
-import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import androidx.annotation.WorkerThread
+import android.os.AsyncTask
+import com.example.roommvvmapplication.Word
+import com.example.roommvvmapplication.WordDao
+
 
 class WordRepository(private val wordDao: WordDao) {
+
     val allWords: LiveData<List<Word>> = wordDao.getAllWords()
 
     @WorkerThread
-    fun insert(word: Word){
+    fun insert(word: Word) {
         wordDao.insert(word)
     }
 
-    fun deleteAll(){
+
+    /* --------------- BORRAR TODOS LOS DATOS -------------- */
+
+    fun deleteAll() {
         deleteAllWordsAsyncTask(wordDao).execute()
     }
 
-    fun deleteWord(word: Word){
-        deleteAllWordsAsyncTask(wordDao).execute(word)
+    private class deleteAllWordsAsyncTask internal constructor(private val mAsyncTaskDao: WordDao) :
+        AsyncTask<Void, Void, Void>() {
+
+        override fun doInBackground(vararg voids: Void): Void? {
+            mAsyncTaskDao.deleteAll()
+            return null
+        }
     }
 
-    private class deleteAllWordsAsyncTask internal constructor(private val mAsyncTaskDao: WordDao): AsyncTask<Word, Void, Void>() {
-        override fun doInBackground(vararg params: Word?): Void {
+    /* ---------------- BORRAR UN SOLO DATO ---------------- */
+
+    fun deleteWord(word: Word) {
+        deleteWordAsyncTask(wordDao).execute(word)
+    }
+
+    private class deleteWordAsyncTask internal constructor(private val mAsyncTaskDao: WordDao) :
+        AsyncTask<Word, Void, Void>() {
+
+        override fun doInBackground(vararg params: Word): Void? {
             mAsyncTaskDao.deleteWord(params[0])
             return null
         }
+    }
 
+    /* -------------- ACTUALIZAR UN SOLO DATO ---------------- */
+
+    fun update(word: Word) {
+        updateWordAsyncTask(wordDao).execute(word)
+    }
+
+    private class updateWordAsyncTask internal constructor(private val mAsyncTaskDao: WordDao) :
+        AsyncTask<Word, Void, Void>() {
+        override fun doInBackground(vararg params: Word?): Void? {
+            mAsyncTaskDao.update(params[0]!!)
+            return null
+        }
     }
 }
