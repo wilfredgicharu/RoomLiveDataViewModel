@@ -32,7 +32,7 @@ class WordViewModel(application: Application): AndroidViewModel(application) {
         super.onCleared()
         parentJob.cancel()
     }
-    fun deleteAll(){
+    fun deleteAll(myWord: Word) {
         repository.deleteAll()
     }
     fun deleteWord(word: Word){
